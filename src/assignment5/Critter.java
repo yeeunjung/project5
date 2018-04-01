@@ -2,9 +2,9 @@ package assignment5;
 
 import java.util.List;
 
-import assignment4.Critter;
-import assignment4.InvalidCritterException;
-import assignment4.Params;
+import assignment5.Critter;
+import assignment5.InvalidCritterException;
+import assignment5.Params;
 
 public abstract class Critter {
 	/* NEW FOR PROJECT 5 */
