@@ -2,6 +2,8 @@ package assignment5;
 
 import java.util.List;
 
+import assignment4.Critter;
+
 public abstract class Critter {
 	/* NEW FOR PROJECT 5 */
 	public enum CritterShape {
@@ -41,7 +43,95 @@ public abstract class Critter {
 		myPackage = Critter.class.getPackage().toString().split(" ")[1];
 	}
 	
-	protected final String look(int direction, boolean steps) {return "";}
+	/**
+	 * This function returns true or false regarding if two Critters are in the same exact 
+	 * position on the board/world. [custom function]
+	 * @param a is the first Critter
+	 * @param b is the second Critter
+	 * @return boolean - if they are in the same position or not
+	 */
+	private static boolean samePosition(Critter a, Critter b) {
+		return (a.x_coord==b.x_coord && a.y_coord==b.y_coord);
+	}
+	
+	protected final String look(int direction, boolean steps) {
+		energy -= Params.look_energy_cost;
+		int x_coord = this.x_coord;
+		int y_coord = this.y_coord;
+		// if steps==false, move 1
+		if(steps) {
+			switch(direction)	{
+			case 0:
+				x_coord++;
+				break;
+			case 1:
+				x_coord++;
+				y_coord--;
+				break;
+			case 2:
+				y_coord--;
+				break;
+			case 3:
+				y_coord--;
+				x_coord--;
+				break;
+			case 4:
+				x_coord--;
+				break;
+			case 5:
+				x_coord--;
+				y_coord++;
+				break;
+			case 6:
+				y_coord++;
+				break;
+			case 7:
+				x_coord++;
+				y_coord++;
+				break;
+			}
+		} else {
+		// else if steps==true, move 2
+			switch(direction)	{
+			case 0:
+				x_coord+=2;
+				break;
+			case 1:
+				x_coord+=2;
+				y_coord-=2;
+				break;
+			case 2:
+				y_coord-=2;
+				break;
+			case 3:
+				y_coord-=2;
+				x_coord-=2;
+				break;
+			case 4:
+				x_coord-=2;
+				break;
+			case 5:
+				x_coord-=2;
+				y_coord+=2;
+				break;
+			case 6:
+				y_coord+=2;
+				break;
+			case 7:
+				x_coord+=2;
+				y_coord+=2;
+				break;
+			}
+		}
+		
+		// Now check if there exists a critter in that position
+		for(Critter crit : population) {
+			if(x_coord==crit.x_coord && y_coord==crit.y_coord) {
+				return crit.toString();
+			}
+		}
+		return "";
+	}
 	
 	/* rest is unchanged from Project 4 */
 	
