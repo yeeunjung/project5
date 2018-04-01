@@ -3,6 +3,8 @@ package assignment5;
 import java.util.List;
 
 import assignment4.Critter;
+import assignment4.InvalidCritterException;
+import assignment4.Params;
 
 public abstract class Critter {
 	/* NEW FOR PROJECT 5 */
@@ -154,6 +156,10 @@ public abstract class Critter {
 	
 	private int x_coord;
 	private int y_coord;
+	// Our own variable for if the Critter moved at all
+	private boolean moved;
+	// Or if it is fighting
+	private boolean fighting;
 	
 	protected final void walk(int direction) {}
 	
@@ -177,7 +183,21 @@ public abstract class Critter {
 	 * critter_class_name must be the name of a concrete subclass of Critter, if not
 	 * an InvalidCritterException must be thrown
 	 */
-	public static void makeCritter(String critter_class_name) throws InvalidCritterException {}
+	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
+		try {
+			Class newCritter = Class.forName("assignment5." + critter_class_name);
+			Critter Buddy = (Critter) newCritter.newInstance();
+			population.add(Buddy);
+			Buddy.x_coord = getRandomInt(Params.world_width);
+			Buddy.y_coord = getRandomInt(Params.world_height);
+			Buddy.energy = Params.start_energy;
+			Buddy.moved = false;
+			Buddy.fighting = false;
+		}
+		catch(ClassNotFoundException | InstantiationException | IllegalAccessException exception)	{
+			throw new InvalidCritterException(critter_class_name);
+		}
+	}
 	
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		return null;
@@ -241,6 +261,9 @@ public abstract class Critter {
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
+		for(int idx=population.size()-1; idx>=0; idx--){
+			population.remove(idx);
+		}
 	}
 	
 	
