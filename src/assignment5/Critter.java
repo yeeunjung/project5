@@ -1,6 +1,9 @@
 package assignment5;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import assignment5.Critter;
 import assignment5.InvalidCritterException;
@@ -161,19 +164,340 @@ public abstract class Critter {
 	// Or if it is fighting
 	private boolean fighting;
 	
-	protected final void walk(int direction) {}
+	protected final void walk(int direction) {
+		int origX = x_coord;
+		int origY = y_coord;
+		energy -= Params.walk_energy_cost;
+		if(!moved) {
+			switch(direction)	{
+				case 0:
+					x_coord++;
+					break;
+				case 1:
+					x_coord++;
+					y_coord--;
+					break;
+				case 2:
+					y_coord--;
+					break;
+				case 3:
+					y_coord--;
+					x_coord--;
+					break;
+				case 4:
+					x_coord--;
+					break;
+				case 5:
+					x_coord--;
+					y_coord++;
+					break;
+				case 6:
+					y_coord++;
+					break;
+				case 7:
+					x_coord++;
+					y_coord++;
+					break;
+			}
+			if (x_coord >= Params.world_width)	{
+				x_coord = 0;
+			} else if (x_coord <= -1)	{
+				x_coord = Params.world_width-1;
+			}
+			
+			if (y_coord >= Params.world_height)	{
+				y_coord = 0;
+			} else if (y_coord <= -1)	{
+				y_coord = Params.world_height-1;
+			}
+			
+			if(fighting) {
+				int count = 0;
+				for(Critter crit : population) {
+					if(crit.x_coord==x_coord && crit.y_coord==y_coord) {
+						count++;
+					}
+				}
+				if(count<1) {
+					x_coord = origX;
+					y_coord = origY;
+				}
+			}
+			moved = true;
+		}
+	}
 	
-	protected final void run(int direction) {}
+	protected final void run(int direction) {
+		int origX = x_coord;
+		int origY = y_coord;
+		energy -= Params.run_energy_cost;
+		if(!moved) {
+			switch(direction)	{
+				case 0:
+					x_coord+=2;
+					break;
+				case 1:
+					x_coord+=2;
+					y_coord-=2;
+					break;
+				case 2:
+					y_coord-=2;
+					break;
+				case 3:
+					y_coord-=2;
+					x_coord-=2;
+					break;
+				case 4:
+					x_coord-=2;
+					break;
+				case 5:
+					x_coord-=2;
+					y_coord+=2;
+					break;
+				case 6:
+					y_coord+=2;
+					break;
+				case 7:
+					x_coord+=2;
+					y_coord+=2;
+					break;
+			}
+			
+			if (x_coord == Params.world_width)	{
+				x_coord = 0;
+			} else if (x_coord == Params.world_width+1){
+				x_coord = 1;
+			} else if (x_coord == -1)	{
+				x_coord = Params.world_width-1;
+			} else if (x_coord == -2)	{
+				x_coord = Params.world_width-2;
+			}
+			
+			if (y_coord == Params.world_height)	{
+				y_coord = 0;
+			} else if (y_coord == Params.world_height+1) {
+				y_coord = 1;
+			} else if (y_coord == -1)	{
+				y_coord = Params.world_height-1;
+			} else if (y_coord == -2) {
+				y_coord = Params.world_height-2;
+			}
+			
+			if(fighting) {
+				int count = 0;
+				for(Critter crit : population) {
+					if(crit.x_coord==x_coord && crit.y_coord==y_coord) {
+						count++;
+					}
+				}
+				if(count<1) {
+					x_coord = origX;
+					y_coord = origY;
+				}
+			}
+			moved = true;
+		}
+	}
 	
-	protected final void reproduce(Critter offspring, int direction) {}
+	protected final void reproduce(Critter offspring, int direction) {
+		if (energy < Params.min_reproduce_energy) {
+			return;
+		}
+		//offspring energy automatically rounded down because it's an int
+		offspring.energy = energy/2;
+		//to round up the parent's energy
+		double parentEnergy = energy/2;
+		if (parentEnergy%1 != 0) {
+			parentEnergy -= parentEnergy%1;
+			parentEnergy++;
+		}
+		energy = (int) parentEnergy;
+		
+		//an offspring doesn't move...yet
+		offspring.moved = false;
+		//or fight
+		offspring.fighting = false;
+		
+		//to determine the offspring's position
+		switch(direction)	{
+			case 0:
+				offspring.x_coord = x_coord+1;
+				offspring.y_coord = y_coord;
+				break;
+			case 1:
+				offspring.x_coord = x_coord+1;
+				offspring.y_coord = y_coord-1;
+				break;
+			case 2:
+				offspring.x_coord = x_coord;
+				offspring.y_coord = y_coord-1;
+				break;
+			case 3:
+				offspring.x_coord = x_coord-1;
+				offspring.y_coord = y_coord-1;
+				break;
+			case 4:
+				offspring.x_coord = x_coord-1;
+				offspring.y_coord = y_coord;
+				break;
+			case 5:
+				offspring.x_coord = x_coord-1;
+				offspring.y_coord = y_coord+1;
+				break;
+			case 6:
+				offspring.x_coord = x_coord;
+				offspring.y_coord = y_coord+1;
+				break;
+			case 7:
+				offspring.x_coord = x_coord+1;
+				offspring.y_coord = y_coord+1;
+				break;
+		}
+	}
 
 	public abstract void doTimeStep();
 	public abstract boolean fight(String oponent);
 	
+	/**
+	 * This functions process the encounters between different Critters
+	 */
+	private static void doEncounters() {
+		// Must first figure out who is in the same spots
+		Map<String, ArrayList<Integer>> encountered = new HashMap<String, ArrayList<Integer>>();
+		String coord="";
+		for(int idx1=0; idx1<population.size()-1; idx1++) {
+			for(int idx2=idx1+1; idx2<population.size(); idx2++) {
+				if(population.get(idx1).x_coord==population.get(idx2).x_coord && population.get(idx1).y_coord==population.get(idx2).y_coord) {
+					ArrayList<Integer> popID = new ArrayList<Integer>();
+					coord = String.valueOf(population.get(idx1).x_coord) + "," + String.valueOf(population.get(idx1).y_coord);
+					if(encountered.containsKey(coord)) {
+						// Key exists within the map
+						if(!encountered.get(coord).contains(idx1)) {
+							encountered.get(coord).add(idx1);
+						}
+						if(!encountered.get(coord).contains(idx2)) {
+							encountered.get(coord).add(idx2);
+						}
+					} else {
+						// Else create new key
+						popID.add(idx1);
+						popID.add(idx2);
+						encountered.put(coord,popID);
+					}
+				}
+			}
+		}
 	
-	public static void worldTimeStep() {}
+		// Time to fight
+		for (Map.Entry<String, ArrayList<Integer>> duel : encountered.entrySet()) {
+			// This means that we are talking for each key,value entry
+			for(int idx=0; idx<duel.getValue().size()-1; idx++) {
+				// We are now fighting~ must update boolean fighting
+				population.get(duel.getValue().get(idx)).fighting = true;
+				population.get(duel.getValue().get(idx+1)).fighting = true;				
+				int winner=0;
+				int loser=0;
+				boolean p1Fight = population.get(duel.getValue().get(idx)).fight(population.get(duel.getValue().get(idx+1)).toString());
+				boolean p2Fight = population.get(duel.getValue().get(idx+1)).fight(population.get(duel.getValue().get(idx)).toString());
+				// Must also account for movement
+				if(population.get(duel.getValue().get(idx)).energy>0 && population.get(duel.getValue().get(idx+1)).energy>0 && Critter.samePosition(population.get(duel.getValue().get(idx)), population.get(duel.getValue().get(idx+1)))) {
+					int p1Roll;
+					int p2Roll;
+					// If one does not want to fight, the fighter auto wins
+					
+					if(p1Fight!=p2Fight) {
+						if(p1Fight) {
+							winner = idx;
+							loser = idx+1;
+						}
+						else if(p2Fight) {
+							winner = idx+1;
+							loser = idx;
+						}
+					} else {
+					
+						if(p1Fight) {
+							p1Roll = Critter.getRandomInt(population.get(duel.getValue().get(idx)).energy+1);
+						} else {
+							p1Roll = 0;
+						}
+						if(p2Fight) {
+							p2Roll = Critter.getRandomInt(population.get(duel.getValue().get(idx+1)).energy+1);
+						} else {
+							p2Roll = 0;
+						}
+						// Now we check who is winner
+						if(p1Roll > p2Roll) {
+							winner = idx;
+							loser = idx+1;
+						} else if(p1Roll <= p2Roll) {
+							winner = idx+1;
+							loser = idx;
+						} 	
+					}			
+					
+					population.get(duel.getValue().get(winner)).energy += population.get(duel.getValue().get(loser)).energy/2;
+					population.get(duel.getValue().get(loser)).energy = 0;
+					
+					// The fighting has concluded. Mark as such.
+					population.get(duel.getValue().get(idx)).fighting = false;
+					population.get(duel.getValue().get(idx+1)).fighting = false;
+					
+					//System.out.println(population.get(duel.getValue().get(winner)).toString() + winner + " has won");
+				} 
+			}
+		}
+		return;
+	}
+	public static void worldTimeStep() {
+		// Increment timestep
+		
+		// Update timesteps
+		for(Critter c : population) {
+			c.doTimeStep();
+		}
+		
+		// Do the fights. doEncounters()
+		Critter.doEncounters();
+		
+		// UpdateRestEnergy
+		for(Critter c : population) {
+			c.energy = c.energy-Params.rest_energy_cost;
+		}
+		
+		// Generate algae genAlgae()
+		for(int count=0; count<Params.refresh_algae_count; count++) {
+			try {
+				Critter.makeCritter("Algae");
+			} catch(InvalidCritterException | NoClassDefFoundError e) {
+        		System.out.println("fuck u");
+        	}
+		}
+		
+		// Move babies to general population
+		for(Critter baby : babies) {
+			population.add(baby);
+		}
+		babies.clear();
+		
+		// Cull the dead!
+		for(int idx=population.size()-1; idx>=0; idx--) {
+			if(population.get(idx).energy<=0) {
+				population.remove(idx);
+			}
+		}
+		
+		// Now that the time is over, everyone resets if they have moved or not
+		for(Critter crit : population) {
+			crit.moved = false;
+			crit.fighting = false;
+		}		
+	}
 	
-	public static void displayWorld(Object pane) {} 
+	public static void displayWorld(/*Object pane*/) {
+		// Create a pane for the Critters
+			
+	} 
 	/* Alternate displayWorld, where you use Main.<pane> to reach into your
 	   display component.
 	   // public static void displayWorld() {}
