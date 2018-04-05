@@ -1,8 +1,9 @@
 package assignment5;
 
 import java.io.ByteArrayOutputStream;
-
+import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -51,7 +52,7 @@ import javafx.scene.control.TextArea;
 
 public class Main extends Application{
 	private static String myPackage;	// package of Critter file.  Critter cannot be in default pkg.
-	public static final int MULTIPLIER = 3;
+	public static final int MULTIPLIER = 4;
     
     // Gets the package name.  The usage assumes that Critter and its subclasses are all in the same package.
     static {
@@ -86,7 +87,7 @@ public class Main extends Application{
 	    layout.setPadding(new Insets(20));
 	    Canvas worldCanvas = new Canvas(Params.world_width*MULTIPLIER, Params.world_height*MULTIPLIER);	// Canvas for Critters
 		BorderPane controller = new BorderPane();	// Game window layout
-		controller.setMinSize(Params.world_width+4, Params.world_height+4);	
+		controller.setMinSize(Params.world_width, Params.world_height);	
 	    controller.setStyle("-fx-border-color: green;");
 	    controller.setCenter(worldCanvas);
 	    layout.setTop(header);
@@ -177,9 +178,21 @@ public class Main extends Application{
 
             }
 	    });	  
-	        //String[] classes = this.getClasses();
-	        String[] classes = {"Craig"};
-	        makeCritterDropdown.getItems().addAll(classes);
+	    // RETRIEVING CLASSES - for the make function
+	    File srcFile = new File("C:\\Users\\nodur\\eclipse-workspace\\project5\\src\\assignment5");    
+	    ArrayList<String> classes = new ArrayList<String>();
+	    for (String crit : srcFile.list()) {
+	    	crit = crit.substring(0, crit.lastIndexOf("."));
+	    	try {
+	    		if(Critter.class.isAssignableFrom((Class.forName("assignment5."+crit)))){
+	    			classes.add(crit);
+	    		}
+	    	} catch (ClassNotFoundException e) {
+	    		// ignore
+	    	}
+	    }
+	    
+	    makeCritterDropdown.getItems().addAll(classes);
 
 	    // ### MAKE FUNCTION ###
         babymaker.setOnAction(new EventHandler<ActionEvent>() {
@@ -215,13 +228,6 @@ public class Main extends Application{
             		System.exit(0);
             }
 	    });
-	     	    	 	    	
-	    
-	    //
-	    GridPane grid = new GridPane();
-	    grid.setHgap(10);
-	    grid.setVgap(10);
-	    grid.setPadding(new Insets(0, 10, 0, 10));
 	    
         step.setOnAction(new EventHandler<ActionEvent>() {     
             @Override 
@@ -273,7 +279,7 @@ public class Main extends Application{
             public void handle(ActionEvent e) {
             	animStop(timeline, worldCanvas, runBtn, step, babymaker);
             }
-        });
+        });        
         
         Scene placeLayout = new Scene(layout);
         stage.setScene(placeLayout);
@@ -282,7 +288,7 @@ public class Main extends Application{
 	
 	
 	// FOR ANIMATIONS - PACKETS
-	public static void animateTime(Canvas world, TextArea statsText, double animSpeed) {
+	private static void animateTime(Canvas world, TextArea statsText, double animSpeed) {
 		for(int count=0; count<(int)animSpeed; count++) {
 			Critter.worldTimeStep();			
 		}
@@ -290,7 +296,7 @@ public class Main extends Application{
 	    statsText.setText(Critter.runStats());
 	}
 	
-	public static void animStart(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
+	private static void animStart(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
 		timeline.setCycleCount(Animation.INDEFINITE);
     	timeline.play();
     	b1.setDisable(true);
@@ -298,7 +304,7 @@ public class Main extends Application{
     	b3.setDisable(true);
 	}
 	
-	public static void animStop(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
+	private static void animStop(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
 		timeline.stop();
     	b1.setDisable(false);
     	b2.setDisable(false);
