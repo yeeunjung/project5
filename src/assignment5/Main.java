@@ -8,7 +8,13 @@ import java.util.Scanner;
 
 import assignment5.InvalidCritterException;
 import assignment5.Critter;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -31,10 +37,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.scene.control.Button;
 
 import javafx.scene.Group;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
@@ -42,7 +51,7 @@ import javafx.scene.control.TextArea;
 
 public class Main extends Application{
 	private static String myPackage;	// package of Critter file.  Critter cannot be in default pkg.
-	public static final int MULTIPLIER = 6;
+	public static final int MULTIPLIER = 3;
     
     // Gets the package name.  The usage assumes that Critter and its subclasses are all in the same package.
     static {
@@ -50,12 +59,11 @@ public class Main extends Application{
     }
 	@Override
 	public void start(Stage stage) throws Exception {
-		// CONTROLLER
+		//**** CREATING VARIABLES*****************
 		stage.setTitle(" C R I T T E R S !");
 		BorderPane controller = new BorderPane();
 		controller.setMinSize(Params.world_width+4, Params.world_height+4);
-		Text header = new Text("C R I T T E R S");
-		header.setFont(Font.font("Courier New", FontWeight.BOLD, 24));
+		//**** ALL BUTTONS ***********************
 	    Button btn = new Button("STEP");
 	    Button step100 = new Button("STEP 100 TIMES");
 	    Button step1000 = new Button("STEP 1000 TIMES");
@@ -65,8 +73,11 @@ public class Main extends Application{
         TextField makeInputBox = new TextField(); 
         makeInputBox.setPromptText("Enter # of Critters to make");
 	    Button babymaker = new Button("MAKE");
-	    Button setSeed = new Button("SET SEED");
         Button runBtn = new Button("RUN");
+        Button stopBtn = new Button("STOP");
+        btn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+
+	    Button setSeed = new Button("SET SEED");
 	    Button quitBtn = new Button("QUIT");
 	    TextField seed = new TextField ();
 	    seed.setPromptText("Enter new seed");
@@ -74,7 +85,12 @@ public class Main extends Application{
 	    step100.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    step1000.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    babymaker.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+	    runBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+	    stopBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 
+        
+		Text header = new Text("C R I T T E R S");
+		header.setFont(Font.font("Courier New", FontWeight.BOLD, 24));
 	    BorderPane layout = new BorderPane();
 	    layout.setPadding(new Insets(20));
 	    Canvas worldCanvas = new Canvas(Params.world_width*MULTIPLIER, Params.world_height*MULTIPLIER);
@@ -98,6 +114,7 @@ public class Main extends Application{
 	    vbox.getChildren().add(title);
 	    vbox.getChildren().add(btn);
 	    vbox.getChildren().add(babymaker);
+
 	    vbox.getChildren().add(step100);
 	    vbox.getChildren().add(step1000);
         vbox.getChildren().add(makeInputBox);
@@ -116,6 +133,7 @@ public class Main extends Application{
 	    layout.setTop(header);
 	    layout.setLeft(vbox);
 	    layout.setCenter(controller);
+
 	    layout.setRight(stats);
 	    // END OF NOT MY CODE
 	    
@@ -211,20 +229,6 @@ public class Main extends Application{
 	    grid.setVgap(10);
 	    grid.setPadding(new Insets(0, 10, 0, 10));
 
-	    // Category in column 2, row 1
-	    Text category = new Text("..");
-	    category.setFont(Font.font("Arial", FontWeight.BOLD, 10));
-	    grid.add(category, 0, 0); 
-	    //Critter.makeCritter("Algae");
-	    
-	    grid.setGridLinesVisible(true);
-	    //
-	    //layout.setRight(grid);
-	    //controller.setCenter(grid);
-	    /*
-	     * 
-	     * testing shit
-	     */
 	    Critter.makeCritter("Algae");
 	    
         btn.setOnAction(new EventHandler<ActionEvent>() {     
@@ -236,40 +240,103 @@ public class Main extends Application{
         	    statsText.setText(Critter.runStats());
             }
         });
-        babymaker.setOnAction(new EventHandler<ActionEvent>() {     
-            @Override 
-            public void handle(ActionEvent e) {
-            	try {
-    				Critter.makeCritter("Craig");
-    				Critter.makeCritter("Critter1");
-    				Critter.makeCritter("Critter2");
-    				Critter.makeCritter("Critter3");
-    				Critter.makeCritter("Critter4");
-    			//in case the user provided an invalid critter name
-    			} catch(InvalidCritterException | NoClassDefFoundError e1) {
-    				System.out.println("error processing: " + "Craig");
-    			}
-            	Critter.displayWorld(worldCanvas);
-        	    statsText.setText(Critter.runStats());
+        // SLIDER START
+        HBox animSliderFullLabel = new HBox();
+        VBox animSlider = new VBox();
+        animSlider.setPadding(new Insets(5));
+        Slider animSpeed = new Slider(0,100,1);
+        animSpeed.setShowTickMarks(true);
+        animSpeed.setShowTickLabels(true);
+        Label animSpeedLbl = new Label(Integer.toString((int)animSpeed.getValue()));
+        animSpeedLbl.setFont(Font.font("Courier New", 10));
+        animSpeed.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                Number old_val, Number new_val) {
+                    animSpeedLbl.setText(String.format("%1.0f", new_val));
             }
         });
+        Text animSpeedTxt = new Text("ANIMATION SPEED : ");
+		animSpeedTxt.setFont(Font.font("Courier New", 10));
+		animSliderFullLabel.getChildren().add(animSpeedTxt);
+		animSliderFullLabel.getChildren().add(animSpeedLbl);
+		animSlider.getChildren().add(animSliderFullLabel);
+        animSlider.getChildren().add(animSpeed);
+        vbox.getChildren().add(animSlider);
+        // SLIDER END
+        
 
-        
-        boolean running = true;
-        runBtn.setOnAction(new EventHandler<ActionEvent>() {     
+        vbox.getChildren().add(runBtn);
+        Timeline timeline = new Timeline(new KeyFrame(
+    	        Duration.millis(500),
+    	        ae -> animateTime(worldCanvas, animSpeed.getValue())));
+        runBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override 
             public void handle(ActionEvent e) {
-            		Critter.worldTimeStep();
-                Critter.displayWorld(worldCanvas);
-        	    		statsText.setText(Critter.runStats());
+            	animStart(timeline, worldCanvas, runBtn, btn, babymaker);
             }
         });
-        
+        //String[] classes = this.getClasses()
+        makeCritterDropdown.getItems().addAll(classes);
+
+        babymaker.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    String selection = makeCritterDropdown.getValue();
+                    if (selection != null) {
+                        String s = makeInputBox.getText();
+                        if (s != null) {
+                            int n = Integer.parseInt(s);
+                            for (int i = 0; i < n; i++) {
+                                Critter.makeCritter(selection);
+                                Critter.displayWorld(worldCanvas);
+                            }
+                        }
+                    }
+                } catch (InvalidCritterException e) {
+                    // ignore
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+            }
+        });
+        vbox.getChildren().add(makeInputBox);
+        vbox.getChildren().add(makeCritterDropdown);
+
+               vbox.getChildren().add(stopBtn);
+        stopBtn.setOnAction(new EventHandler<ActionEvent>() {     
+            @Override 
+            public void handle(ActionEvent e) {
+            	animStop(timeline, worldCanvas, runBtn, btn, babymaker);
+            }
+        });
         Scene leftBorder = new Scene(layout);
         
 
         stage.setScene(leftBorder);
 		stage.show();
 	}
-
+	
+	// FOR ANIMATIONS - PACKETS
+	public static void animateTime(Canvas world, double animSpeed) {
+		for(int count=0; count<(int)animSpeed; count++) {
+			Critter.worldTimeStep();			
+		}
+		Critter.displayWorld(world);
+	}
+	
+	public static void animStart(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
+		timeline.setCycleCount(Animation.INDEFINITE);
+    	timeline.play();
+    	b1.setDisable(true);
+    	b2.setDisable(true);
+    	b3.setDisable(true);
+	}
+	
+	public static void animStop(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
+		timeline.stop();
+    	b1.setDisable(false);
+    	b2.setDisable(false);
+    	b3.setDisable(false);
+	}
 }
