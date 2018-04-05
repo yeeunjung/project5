@@ -14,8 +14,6 @@ package assignment5;
 import java.util.ArrayList;
 import java.util.List;
 
-import assignment5.Critter.CritterShape;
-
 //This critter can walk in any direction and never chooses to fight. This critter's also very lucky, and
 //each turn it wins a little bit of money from a lottery ticket (up to $100). runStats prints the total
 //money won as well as the individual amounts won each time step.

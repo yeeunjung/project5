@@ -20,8 +20,6 @@ package assignment5;
  */
 import java.util.*;
 
-import assignment5.Critter.CritterShape;
-
 public class Critter3 extends Critter {
 	private static int numTimesStressed = 0;
 	private static int numTimesEyeContact = 0;

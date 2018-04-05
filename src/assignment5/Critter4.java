@@ -20,8 +20,6 @@ package assignment5;
  */
 import java.util.*;
 
-import assignment5.Critter.CritterShape;
-
 public class Critter4 extends Critter {
 	private static int coins = 0;
 	private int dir = 0;

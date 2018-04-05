@@ -11,8 +11,6 @@ package assignment5;
  * Spring 2018
  */
 
-import assignment5.Critter.CritterShape;
-
 //This critter can only run in directions 0, 1, and 2 and reproduces every turn.
 //Moving diagonally makes this critter aggressive and ready to fight.
 //Moving horizontally or vertically makes this critter clumsy, so each time it moves in such a way it falls and gets a new bruise.
