@@ -45,6 +45,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextArea;
+
 
 public class Main extends Application{
 	private static String myPackage;	// package of Critter file.  Critter cannot be in default pkg.
@@ -62,10 +65,25 @@ public class Main extends Application{
 		controller.setMinSize(Params.world_width+4, Params.world_height+4);
 		//**** ALL BUTTONS ***********************
 	    Button btn = new Button("STEP");
+	    Button step100 = new Button("STEP 100 TIMES");
+	    Button step1000 = new Button("STEP 1000 TIMES");
+        Button makeButton = new Button("Make Critter(s)");
+	    Text critterTypeLabel = new Text("Critter Type:");
+        ComboBox<String> makeCritterDropdown = new ComboBox<>();
+        TextField makeInputBox = new TextField(); 
+        makeInputBox.setPromptText("Enter # of Critters to make");
 	    Button babymaker = new Button("MAKE");
         Button runBtn = new Button("RUN");
         Button stopBtn = new Button("STOP");
         btn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+
+	    Button setSeed = new Button("SET SEED");
+	    Button quitBtn = new Button("QUIT");
+	    TextField seed = new TextField ();
+	    seed.setPromptText("Enter new seed");
+	    btn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+	    step100.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+	    step1000.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    babymaker.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    runBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    stopBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
@@ -82,17 +100,130 @@ public class Main extends Application{
 	    VBox vbox = new VBox();
 	    vbox.setPadding(new Insets(20));
 	    vbox.setSpacing(8);
-
+	    
+	    VBox stats = new VBox();
+	    TextArea statsText = new TextArea();
+	    statsText.setText(Critter.runStats());
+	    //statsText.setDisable(true);
+	    stats.getChildren().add(statsText);
+	    //List<Critter> crittersUgh = new List<Critter>();
+	    
+	    //statsText.setText(Critter.runStats());
 	    Text title = new Text("DATA");
 	    title.setFont(Font.font("Courier New", FontWeight.BOLD, 14));
 	    vbox.getChildren().add(title);
 	    vbox.getChildren().add(btn);
 	    vbox.getChildren().add(babymaker);
+
+	    vbox.getChildren().add(step100);
+	    vbox.getChildren().add(step1000);
+        vbox.getChildren().add(makeInputBox);
+        vbox.getChildren().add(critterTypeLabel);
+        vbox.getChildren().add(makeCritterDropdown);
+        vbox.getChildren().add(makeButton);
+	    vbox.getChildren().add(seed);
+	    vbox.getChildren().add(setSeed);
+	    vbox.getChildren().add(runBtn);
+	    vbox.getChildren().add(quitBtn);
+	    
+	    
+	    // actually mine but whatever
 	    controller.setStyle("-fx-border-color: green;");
 	    controller.setCenter(worldCanvas);
 	    layout.setTop(header);
 	    layout.setLeft(vbox);
 	    layout.setCenter(controller);
+
+	    layout.setRight(stats);
+	    // END OF NOT MY CODE
+	    
+
+
+	    step100.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override 
+            public void handle(ActionEvent e) {
+                // Action for Button
+	            	for(int i=0; i<100; i++)	{
+	            		Critter.worldTimeStep();
+	            	}
+	            	Critter.displayWorld(worldCanvas);
+	        	    statsText.setText(Critter.runStats());
+            }
+	    });
+	    
+	    step1000.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override 
+            public void handle(ActionEvent e) {
+                // Action for Button
+	            	for(int i=0; i<1000; i++)	{
+	            		Critter.worldTimeStep();
+	            	}
+	            	Critter.displayWorld(worldCanvas);
+	        	    statsText.setText(Critter.runStats());
+            }
+	    });
+	    
+	    
+	    
+	    setSeed.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override 
+            public void handle(ActionEvent e) {
+            		try	{
+		            	if (seed != null)	{
+		            		int newSeed = Integer.parseInt(seed.getText());
+		            		Critter.setSeed(newSeed);
+		            	}
+            		} catch(NumberFormatException exception) {
+            			new Alert(Alert.AlertType.ERROR, "Please enter a valid seed integer.").showAndWait();
+            		}
+
+            }
+	    });
+	    
+	  
+	        //String[] classes = this.getClasses();
+	        String[] classes = {"Craig"};
+	        makeCritterDropdown.getItems().addAll(classes);
+
+
+	        makeButton.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	                try {
+	                    String selection = makeCritterDropdown.getValue();
+	                    if (selection != null) {
+	                        String s = makeInputBox.getText();
+	                        if (s != null) {
+	                            int n = Integer.parseInt(s);
+	                            for (int i = 0; i < n; i++) {
+	                                Critter.makeCritter(selection);
+	                            }
+	                            Critter.displayWorld(worldCanvas);
+	                            statsText.setText(Critter.runStats());
+	                        }
+	                    }
+	                } catch (InvalidCritterException e) {
+	                    // ignore
+	                } catch (NumberFormatException e) {
+	                    // ignore
+	                }
+	            }
+	        
+	        });
+
+	        
+	    quitBtn.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override 
+            public void handle(ActionEvent e) {
+            		System.exit(0);
+            }
+	    });
+	     
+
+	    	  
+	    	
+	    
+	    //
 	    GridPane grid = new GridPane();
 	    grid.setHgap(10);
 	    grid.setVgap(10);
@@ -106,6 +237,7 @@ public class Main extends Application{
                 // Action for Button
             	Critter.worldTimeStep();
             	Critter.displayWorld(worldCanvas);
+        	    statsText.setText(Critter.runStats());
             }
         });
         // SLIDER START
@@ -143,12 +275,9 @@ public class Main extends Application{
             	animStart(timeline, worldCanvas, runBtn, btn, babymaker);
             }
         });
-        ComboBox<String> makeCritterDropdown = new ComboBox<>();
-        //String[] classes = this.getClasses();
-        String[] classes = {"Critter1", "Critter2", "Critter3"};
+        //String[] classes = this.getClasses()
         makeCritterDropdown.getItems().addAll(classes);
 
-        TextField makeInputBox = new TextField("1"); // default to 1 critter
         babymaker.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
