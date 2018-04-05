@@ -1,6 +1,7 @@
 package assignment5;
 
 import java.io.ByteArrayOutputStream;
+
 import java.io.PrintStream;
 import java.util.Random;
 import java.util.Scanner;
@@ -31,6 +32,10 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+
+import javafx.scene.Group;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 
 public class Main extends Application{
 	private static String myPackage;	// package of Critter file.  Critter cannot be in default pkg.
@@ -77,6 +82,59 @@ public class Main extends Application{
 	    layout.setLeft(vbox);
 	    layout.setCenter(controller);
 	    // END OF NOT MY CODE
+	    
+
+	    
+	    makeCritter.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override 
+            public void handle(ActionEvent e) {
+                // Action for Button
+            	Critter.worldTimeStep();
+            	System.out.println("Hello Bug");
+            }
+	    });
+	    
+
+	    	  
+
+	    
+	        
+	        Button makeButton = new Button("Make Critter");
+	        ComboBox<String> makeCritterDropdown = new ComboBox<>();
+	        //String[] classes = this.getClasses();
+	        String[] classes = {"Critter1", "Critter2", "Critter3"};
+	        makeCritterDropdown.getItems().addAll(classes);
+
+	        TextField makeInputBox = new TextField("1"); // default to 1 critter
+	        makeButton.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	                try {
+	                    String selection = makeCritterDropdown.getValue();
+	                    if (selection != null) {
+	                        String s = makeInputBox.getText();
+	                        if (s != null) {
+	                            int n = Integer.parseInt(s);
+	                            for (int i = 0; i < n; i++) {
+	                                Critter.makeCritter(selection);
+	                            }
+	                        }
+	                    }
+	                } catch (InvalidCritterException e) {
+	                    // ignore
+	                } catch (NumberFormatException e) {
+	                    // ignore
+	                }
+	            }
+	        });
+
+	        vbox.getChildren().add(makeButton);
+	        vbox.getChildren().add(makeInputBox);
+	        vbox.getChildren().add(makeCritterDropdown);
+	      
+
+	    	  
+	    	
 	    
 	    //
 	    GridPane grid = new GridPane();
