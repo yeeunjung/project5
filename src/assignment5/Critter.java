@@ -8,6 +8,14 @@ import java.util.Map;
 import assignment5.Critter;
 import assignment5.InvalidCritterException;
 import assignment5.Params;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Shape;
 
 public abstract class Critter {
 	/* NEW FOR PROJECT 5 */
@@ -494,9 +502,30 @@ public abstract class Critter {
 		}		
 	}
 	
-	public static void displayWorld(/*Object pane*/) {
+	public static void displayWorld(Canvas world) {
 		// Create a pane for the Critters
-			
+		System.out.println("HELLO");
+		GraphicsContext gc = ((Canvas) world).getGraphicsContext2D();
+		gc.clearRect(0, 0, Params.world_width*2, Params.world_height*2);
+		for(Critter crit : population) {
+			//gc.strokePolyline(crit.viewShape(), crit.viewOutlineColor(), crit.viewFillColor());
+			gc.setFill(crit.viewFillColor());
+	        gc.setStroke(crit.viewOutlineColor());
+	        
+	        if(crit.viewShape()==CritterShape.CIRCLE) {
+	        	gc.fillOval(crit.x_coord*2, crit.y_coord*2, 2, 2);
+		        gc.strokeOval(crit.x_coord*2, crit.y_coord*2, 2, 2);
+	        } else if(crit.viewShape()==CritterShape.SQUARE) {
+	        	gc.fillRect(crit.x_coord*2, crit.y_coord*2, 2, 2);
+		        gc.strokeRect(crit.x_coord*2, crit.y_coord*2, 2, 2);
+	        } else if(crit.viewShape()==CritterShape.TRIANGLE) {
+	        	Polygon triangle = new Polygon();
+	        	double[] xPoints = { 50.0, 0.0, 100.0 };
+	        	double[] yPoints = { 0.0, 50.0, 50.0 };
+	        	gc.strokePolygon(xPoints, yPoints, 3);
+	        }
+	        
+		}
 	} 
 	/* Alternate displayWorld, where you use Main.<pane> to reach into your
 	   display component.
@@ -524,7 +553,13 @@ public abstract class Critter {
 	}
 	
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
-		return null;
+		List<Critter> result = new java.util.ArrayList<Critter>();
+		for (Critter c: population) {
+			if (c.getClass().getSimpleName().equals(critter_class_name)) {
+				result.add(c);
+			}
+		}
+		return result;
 	}
 	
 	public static void runStats(List<Critter> critters) {}
