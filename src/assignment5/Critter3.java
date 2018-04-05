@@ -31,7 +31,15 @@ public class Critter3 extends Critter {
 	 */
 	@Override
 	public void doTimeStep() {
-		walk(3);
+		if(look(3,false).equals("")) {
+			walk(3);
+		} else if(look(1,false).equals("")){
+			walk(1);
+		} else if(look(5,false).equals("")) {
+			walk(5);
+		} else {
+			walk(7);
+		}
 	}
 	
 	/**

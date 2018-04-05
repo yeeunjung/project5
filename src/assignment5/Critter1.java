@@ -75,7 +75,7 @@ public class Critter1 extends Critter{
 	}
 	
 	@Override
-	public CritterShape viewShape() { return CritterShape.FLOWER; }
+	public CritterShape viewShape() { return CritterShape.HEART; }
 	
 	@Override
 	public javafx.scene.paint.Color viewColor() { return javafx.scene.paint.Color.HOTPINK; }
