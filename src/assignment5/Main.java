@@ -39,7 +39,7 @@ import javafx.scene.control.TextField;
 
 public class Main extends Application{
 	private static String myPackage;	// package of Critter file.  Critter cannot be in default pkg.
-	public static final int MULTIPLIER = 3;
+	public static final int MULTIPLIER = 6;
     
     // Gets the package name.  The usage assumes that Critter and its subclasses are all in the same package.
     static {
@@ -84,21 +84,10 @@ public class Main extends Application{
 	    // END OF NOT MY CODE
 	    
 
-	    
-	    makeCritter.setOnAction(new EventHandler<ActionEvent>()	{
-            @Override 
-            public void handle(ActionEvent e) {
-                // Action for Button
-            	Critter.worldTimeStep();
-            	System.out.println("Hello Bug");
-            }
-	    });
-	    
-
 	    	  
 
 	    
-	        
+/*	        
 	        Button makeButton = new Button("Make Critter");
 	        ComboBox<String> makeCritterDropdown = new ComboBox<>();
 	        //String[] classes = this.getClasses();
@@ -131,7 +120,7 @@ public class Main extends Application{
 	        vbox.getChildren().add(makeButton);
 	        vbox.getChildren().add(makeInputBox);
 	        vbox.getChildren().add(makeCritterDropdown);
-	      
+*/	      
 
 	    	  
 	    	

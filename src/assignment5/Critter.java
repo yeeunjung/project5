@@ -547,7 +547,20 @@ public abstract class Critter {
 	        	gc.strokePolygon(xPoints, yPoints, 10);
 	        	gc.fillPolygon(xPoints, yPoints, 10);
 	        } else if(crit.viewShape()==CritterShape.FLOWER) {
-	        	gc.fillArc(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	        	double[] xPoints = { (crit.x_coord+0.5)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
+			 			(crit.x_coord+1)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
+			 			 (crit.x_coord+0.809)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
+			 			 (crit.x_coord+0.191)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
+			 			 (crit.x_coord)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
+			 			};
+	        	double[] yPoints = { (crit.y_coord)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
+						(crit.y_coord+0.363)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
+						 (crit.y_coord+1)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
+						 (crit.y_coord+1)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
+						 (crit.y_coord+0.363)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
+						};
+	        	gc.strokePolygon(xPoints, yPoints, 10);
+	        	gc.fillPolygon(xPoints, yPoints, 10);
 	        }
 	        
 		}

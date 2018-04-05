@@ -89,6 +89,6 @@ public class Critter3 extends Critter {
 	public CritterShape viewShape() { return CritterShape.DIAMOND; }
 	
 	@Override
-	public javafx.scene.paint.Color viewColor() { return javafx.scene.paint.Color.VIOLET; }
+	public javafx.scene.paint.Color viewColor() { return javafx.scene.paint.Color.PURPLE; }
 
 }
