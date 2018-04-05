@@ -69,6 +69,7 @@ public class Main extends Application{
         Button stopBtn = new Button("STOP");
 	    Button setSeed = new Button("SET SEED");
 	    Button quitBtn = new Button("QUIT");
+	    Button statsBtn = new Button("RUN STATS");
 	    
 	    step100.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    step1000.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
@@ -76,6 +77,7 @@ public class Main extends Application{
 	    runBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    stopBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
         step.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+        statsBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
         //**** SETS UP WORLD *********************	   
 		stage.setTitle(" C R I T T E R S !");
 		Text header = new Text("C R I T T E R S");
@@ -98,6 +100,12 @@ public class Main extends Application{
 
 	    TextField seed = new TextField ();
 	    seed.setPromptText("Enter new seed");
+	    
+	    ComboBox<String> runStatsDropdown = new ComboBox<String>();
+	    //String[] classes = {"Craig"};
+	    //populate with classes
+        //runStatsDropdown.getItems().addAll(classes);
+        //add option for all
 
 	    // Vbox help credit: https://docs.oracle.com/javafx/2/layout/builtin_layouts.htm
 	    //**** CONTROLS LAYOUT *******************
@@ -271,6 +279,7 @@ public class Main extends Application{
         stage.setScene(placeLayout);
 		stage.show();
 	}
+	
 	
 	// FOR ANIMATIONS - PACKETS
 	public static void animateTime(Canvas world, TextArea statsText, double animSpeed) {
