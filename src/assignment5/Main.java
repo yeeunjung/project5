@@ -42,7 +42,7 @@ import javafx.scene.control.TextArea;
 
 public class Main extends Application{
 	private static String myPackage;	// package of Critter file.  Critter cannot be in default pkg.
-	
+	public static final int MULTIPLIER = 6;
     
     // Gets the package name.  The usage assumes that Critter and its subclasses are all in the same package.
     static {
@@ -77,7 +77,7 @@ public class Main extends Application{
 
 	    BorderPane layout = new BorderPane();
 	    layout.setPadding(new Insets(20));
-	    Canvas worldCanvas = new Canvas(Params.world_width*2, Params.world_height*2);
+	    Canvas worldCanvas = new Canvas(Params.world_width*MULTIPLIER, Params.world_height*MULTIPLIER);
 	    
 	    // NOT MY CODE
 	    // Vbox credit for help: https://docs.oracle.com/javafx/2/layout/builtin_layouts.htm
@@ -119,6 +119,7 @@ public class Main extends Application{
 	    layout.setRight(stats);
 	    // END OF NOT MY CODE
 	    
+
 
 	    step100.setOnAction(new EventHandler<ActionEvent>()	{
             @Override 
@@ -162,8 +163,6 @@ public class Main extends Application{
 	    });
 	    
 	  
-	    
-	        
 	        //String[] classes = this.getClasses();
 	        String[] classes = {"Craig"};
 	        makeCritterDropdown.getItems().addAll(classes);
@@ -193,6 +192,7 @@ public class Main extends Application{
 	            }
 	        
 	        });
+
 	        
 	    quitBtn.setOnAction(new EventHandler<ActionEvent>()	{
             @Override 
@@ -200,7 +200,7 @@ public class Main extends Application{
             		System.exit(0);
             }
 	    });
-	      
+	     
 
 	    	  
 	    	
@@ -241,6 +241,10 @@ public class Main extends Application{
             public void handle(ActionEvent e) {
             	try {
     				Critter.makeCritter("Craig");
+    				Critter.makeCritter("Critter1");
+    				Critter.makeCritter("Critter2");
+    				Critter.makeCritter("Critter3");
+    				Critter.makeCritter("Critter4");
     			//in case the user provided an invalid critter name
     			} catch(InvalidCritterException | NoClassDefFoundError e1) {
     				System.out.println("error processing: " + "Craig");
