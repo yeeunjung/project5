@@ -25,7 +25,8 @@ public abstract class Critter {
 		TRIANGLE,
 		DIAMOND,
 		STAR,
-		FLOWER
+		FLOWER,
+		HEART
 	}
 	
 	/* the default color is white, which I hope makes critters invisible by default
@@ -505,7 +506,6 @@ public abstract class Critter {
 	
 	public static void displayWorld(Canvas world) {
 		// Create a pane for the Critters
-		System.out.println("HELLO");
 		GraphicsContext gc = ((Canvas) world).getGraphicsContext2D();
 		gc.clearRect(0, 0, Params.world_width*Main.MULTIPLIER, Params.world_height*Main.MULTIPLIER);
 		for(Critter crit : population) {
@@ -536,13 +536,13 @@ public abstract class Critter {
 	        			 			(crit.x_coord+1)*Main.MULTIPLIER, (crit.x_coord+0.691)*Main.MULTIPLIER,
 	        			 			 (crit.x_coord+0.809)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
 	        			 			 (crit.x_coord+0.191)*Main.MULTIPLIER, (crit.x_coord+0.309)*Main.MULTIPLIER,
-	        			 			 (crit.x_coord)*Main.MULTIPLIER, (crit.x_coord+0.382)*Main.MULTIPLIER,
+	        			 			 (crit.x_coord)*Main.MULTIPLIER, (crit.x_coord+0.382)*Main.MULTIPLIER
 	        			 			};
 	        	double[] yPoints = { (crit.y_coord)*Main.MULTIPLIER, (crit.y_coord+0.363)*Main.MULTIPLIER,
 	        						(crit.y_coord+0.363)*Main.MULTIPLIER, (crit.y_coord+0.588)*Main.MULTIPLIER,
 	        						 (crit.y_coord+1)*Main.MULTIPLIER, (crit.y_coord+0.726)*Main.MULTIPLIER,
 	        						 (crit.y_coord+1)*Main.MULTIPLIER, (crit.y_coord+0.588)*Main.MULTIPLIER,
-	        						 (crit.y_coord+0.363)*Main.MULTIPLIER, (crit.y_coord+0.363)*Main.MULTIPLIER,
+	        						 (crit.y_coord+0.363)*Main.MULTIPLIER, (crit.y_coord+0.363)*Main.MULTIPLIER
 	        						};
 	        	gc.strokePolygon(xPoints, yPoints, 10);
 	        	gc.fillPolygon(xPoints, yPoints, 10);
@@ -551,16 +551,29 @@ public abstract class Critter {
 			 			(crit.x_coord+1)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
 			 			 (crit.x_coord+0.809)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
 			 			 (crit.x_coord+0.191)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
-			 			 (crit.x_coord)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER,
+			 			 (crit.x_coord)*Main.MULTIPLIER, (crit.x_coord+0.5)*Main.MULTIPLIER
 			 			};
 	        	double[] yPoints = { (crit.y_coord)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
 						(crit.y_coord+0.363)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
 						 (crit.y_coord+1)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
 						 (crit.y_coord+1)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
-						 (crit.y_coord+0.363)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER,
+						 (crit.y_coord+0.363)*Main.MULTIPLIER, (crit.y_coord+0.5)*Main.MULTIPLIER
 						};
 	        	gc.strokePolygon(xPoints, yPoints, 10);
 	        	gc.fillPolygon(xPoints, yPoints, 10);
+	        } else if(crit.viewShape()==CritterShape.HEART) {
+	        	double[] xPoints = { (crit.x_coord+0.5)*Main.MULTIPLIER, (crit.x_coord+0.67)*Main.MULTIPLIER,
+			 			(crit.x_coord+0.83)*Main.MULTIPLIER, (crit.x_coord+1)*Main.MULTIPLIER,
+			 			 (crit.x_coord+0.5)*Main.MULTIPLIER, (crit.x_coord+0)*Main.MULTIPLIER,
+			 			 (crit.x_coord+0.17)*Main.MULTIPLIER, (crit.x_coord+0.33)*Main.MULTIPLIER
+			 			};
+	        	double[] yPoints = { (crit.y_coord+0.33)*Main.MULTIPLIER, (crit.y_coord+0)*Main.MULTIPLIER,
+						(crit.y_coord+0)*Main.MULTIPLIER, (crit.y_coord+0.33)*Main.MULTIPLIER,
+						 (crit.y_coord+1)*Main.MULTIPLIER, (crit.y_coord+0.33)*Main.MULTIPLIER,
+						 (crit.y_coord+0)*Main.MULTIPLIER, (crit.y_coord+0)*Main.MULTIPLIER
+						};
+	        	gc.strokePolygon(xPoints, yPoints, 8);
+	        	gc.fillPolygon(xPoints, yPoints, 8);
 	        }
 	        
 		}
