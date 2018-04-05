@@ -62,13 +62,12 @@ public class Craig extends Critter {
 			total_back += c.genes[4];
 			total_left += c.genes[5] + c.genes[6] + c.genes[7];
 		}
-		System.out.print("" + craigs.size() + " total Craigs    ");
-		System.out.print("" + total_straight / (GENE_TOTAL * 0.01 * craigs.size()) + "% straight   ");
-		System.out.print("" + total_back / (GENE_TOTAL * 0.01 * craigs.size()) + "% back   ");
-		System.out.print("" + total_right / (GENE_TOTAL * 0.01 * craigs.size()) + "% right   ");
-		System.out.print("" + total_left / (GENE_TOTAL * 0.01 * craigs.size()) + "% left   ");
-		System.out.println();
-		return "Craig stats placeholder";
+		String results = ("" + craigs.size() + " total Craigs    ");
+		results += ("" + total_straight / (GENE_TOTAL * 0.01 * craigs.size()) + "% straight   ");
+		results += ("" + total_back / (GENE_TOTAL * 0.01 * craigs.size()) + "% back   ");
+		results += ("" + total_right / (GENE_TOTAL * 0.01 * craigs.size()) + "% right   ");
+		results += ("" + total_left / (GENE_TOTAL * 0.01 * craigs.size()) + "% left   " + '\n');
+		return results;
 	}
 	
 	@Override

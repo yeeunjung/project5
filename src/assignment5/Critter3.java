@@ -71,16 +71,18 @@ public class Critter3 extends Critter {
 	 * how all of them are successful at avoiding people.
 	 * @param critters3 - gives a list of all the critters that are the Critter3 type
 	 */
-	public static void runStats(java.util.List<Critter> critters3) {
-		System.out.println("This Critter hates parties. Let's review how " + critters3.size() + " Critters cope with being in a party situation.");
-		System.out.println("These Critters refused eye contact " + numTimesEyeContact + " times.");
-		System.out.println("These Critters smashed their faces into a corner " + numTimesSmashed + " times.");
-		System.out.println("These Critters were cornered by other Critters " + numTimesStressed + " times.");
+	public static String runStats(java.util.List<Critter> critters3) {
+		String results = ("This Critter hates parties. Let's review how " + critters3.size() + " Critters cope with being in a party situation." + '\n');
+		results += ("These Critters refused eye contact " + numTimesEyeContact + " times."+ '\n');
+		results += ("These Critters smashed their faces into a corner " + numTimesSmashed + " times."+ '\n');
+		results += ("These Critters were cornered by other Critters " + numTimesStressed + " times."+ '\n');
 		if((numTimesStressed + numTimesSmashed+numTimesEyeContact)==0) {
 			numTimesStressed = 1; // picked arbitrary -> will be zero.
 		}
 		double percentageSuccess = (double)(numTimesSmashed+numTimesEyeContact)/(numTimesStressed + numTimesSmashed+numTimesEyeContact)*100;
-		System.out.println("Engagement was successfully avoided " + percentageSuccess + "% of the time.");
+		results += ("Engagement was successfully avoided " + percentageSuccess + "% of the time."+ '\n');
+		
+		return results;
 	}
 	
 	@Override

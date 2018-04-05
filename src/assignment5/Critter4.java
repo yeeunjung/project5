@@ -67,8 +67,8 @@ public class Critter4 extends Critter {
 	 * and also let's them spend the money.
 	 * @param critter4s is the list of all the Critter4 objects that exist
 	 */
-	public static void runStats(java.util.List<Critter> critter4s) {
-		System.out.println("The Critter family of " + critter4s.size() + " has " + coins + " coins to spend.");
+	public static String runStats(java.util.List<Critter> critter4s) {
+		String results = ("The Critter family of " + critter4s.size() + " has " + coins + " coins to spend."+ '\n');
 		int choice = Critter.getRandomInt(5);
 		String chosen="";
 		switch(choice) {
@@ -93,13 +93,14 @@ public class Critter4 extends Critter {
 				coins -= 50*critter4s.size();
 				break;
 		}
-		System.out.println("The Critters choose the " + chosen + ".");
+		results += ("The Critters choose the " + chosen + "."+ '\n');
 		coins -= 500;
 		if(coins<0) {
-			System.out.println("The family now has a debt of " + coins + " coins to the sharks.");
+			results += ("The family now has a debt of " + coins + " coins to the sharks."+ '\n');
 		} else {
-			System.out.println("The family now has " + coins + " coins left.");
+			results += ("The family now has " + coins + " coins left." + '\n');
 		}
+		return results;
 	}
 
 	@Override

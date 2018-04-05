@@ -73,7 +73,7 @@ public abstract class Critter {
 		int x_coord = this.x_coord;
 		int y_coord = this.y_coord;
 		// if steps==false, move 1
-		if(steps) {
+		if(!steps) {
 			switch(direction)	{
 			case 0:
 				x_coord++;

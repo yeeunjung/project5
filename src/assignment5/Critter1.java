@@ -65,12 +65,13 @@ public class Critter1 extends Critter{
 	 * won on lottery tickets, as well as the record of their tickets used each turn and how much money was won from each ticket.
 	 * @param critters list of Critter1s that exist
 	 */
-	public static void runStats(java.util.List<Critter> critters)	{
-		System.out.println("Total Critter5s: " + critters.size());
-		System.out.println("Total lottery money won: $" + totalMoneyWon);
+	public static String runStats(java.util.List<Critter> critters)	{
+		String results = ("Total Critter5s: " + critters.size() + '\n');
+		results += ("Total lottery money won: $" + totalMoneyWon + '\n');
 		for(int i=1; i<tickets.size()+1; i++)	{
-			System.out.println("Lottery ticket " + i + ": $" + tickets.get(i-1) + " won.");
+			results += ("Lottery ticket " + i + ": $" + tickets.get(i-1) + " won." + '\n');
 		}
+		return results;
 	}
 	
 	@Override

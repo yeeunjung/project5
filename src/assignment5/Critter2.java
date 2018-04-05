@@ -12,7 +12,7 @@ package assignment5;
  */
 
 //This critter can only run in directions 0, 1, and 2 and reproduces every turn.
-//Moving diagonally makes this critter aggressive and ready to fight.
+//Moving diagonally makes this critter aggressive and ready to fight, but only if there's another critter right in front of it.
 //Moving horizontally or vertically makes this critter clumsy, so each time it moves in such a way it falls and gets a new bruise.
 //
 
@@ -46,8 +46,8 @@ public class Critter2 extends Critter{
 	 * @return true if the critter wants to fight, false if it doesn't want to fight
 	 */
 	public boolean fight(String opponent) {
-		//if the critter moved diagonally, it's FIGHT NIGHT
-		if (dir == 1)	{
+		//if the critter moved diagonally and there's another critter 1 or 2 spaces in front of it, it's FIGHT NIGHT
+		if (dir == 1 && (look(1, false) != null || look(1, true) != null))	{
 			return true;
 		} else {
 			return false;
@@ -66,9 +66,8 @@ public class Critter2 extends Critter{
 	 * This method gives the total critters and the amount of bruises they have.
 	 * @param critters list of critters with bruises
 	 */
-	public static void runStats(java.util.List<Critter> critters)	{
-		System.out.println("Total Critter2s: " + critters.size());
-		System.out.println("Total bruises: " + bruises);
+	public static String runStats(java.util.List<Critter> critters)	{
+		return "Total Critter2s: " + critters.size() + "\nTotal bruises: " + bruises;
 	}
 	
 	@Override
