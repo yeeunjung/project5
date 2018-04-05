@@ -663,5 +663,6 @@ public abstract class Critter {
 		}
 	}
 	
+
 	
 }
