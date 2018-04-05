@@ -600,7 +600,27 @@ public abstract class Critter {
 		return result;
 	}
 	
-	public static void runStats(List<Critter> critters) {}
+	public static String runStats() { 
+		
+		String results = "" +  population.size() + " critters as follows -- " + '\n';
+		java.util.Map<String, Integer> critter_count = new java.util.HashMap<String, Integer>();
+		for (Critter crit : population) {
+			String crit_string = crit.toString();
+			Integer old_count = critter_count.get(crit_string);
+			if (old_count == null) {
+				critter_count.put(crit_string,  1);
+			} else {
+				critter_count.put(crit_string, old_count.intValue() + 1);
+			}
+		}
+		String prefix = "";
+		for (String s : critter_count.keySet()) {
+			results += prefix + s + ":" + critter_count.get(s);
+			prefix = ", ";
+		}
+		return results;
+
+		} 
 	
 	/* the TestCritter class allows some critters to "cheat". If you want to 
 	 * create tests of your Critter model, you can create subclasses of this class

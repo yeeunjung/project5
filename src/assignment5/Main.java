@@ -36,6 +36,9 @@ import javafx.scene.control.Button;
 import javafx.scene.Group;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextArea;
+
 
 public class Main extends Application{
 	private static String myPackage;	// package of Critter file.  Critter cannot be in default pkg.
@@ -54,8 +57,22 @@ public class Main extends Application{
 		Text header = new Text("C R I T T E R S");
 		header.setFont(Font.font("Courier New", FontWeight.BOLD, 24));
 	    Button btn = new Button("STEP");
+	    Button step100 = new Button("STEP 100 TIMES");
+	    Button step1000 = new Button("STEP 1000 TIMES");
+        Button makeButton = new Button("Make Critter(s)");
+	    Text critterTypeLabel = new Text("Critter Type:");
+        ComboBox<String> makeCritterDropdown = new ComboBox<>();
+        TextField makeInputBox = new TextField(); 
+        makeInputBox.setPromptText("Enter # of Critters to make");
 	    Button babymaker = new Button("MAKE");
+	    Button setSeed = new Button("SET SEED");
+        Button runBtn = new Button("RUN");
+	    Button quitBtn = new Button("QUIT");
+	    TextField seed = new TextField ();
+	    seed.setPromptText("Enter new seed");
 	    btn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+	    step100.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+	    step1000.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    babymaker.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
 
 	    BorderPane layout = new BorderPane();
@@ -64,15 +81,33 @@ public class Main extends Application{
 	    
 	    // NOT MY CODE
 	    // Vbox credit for help: https://docs.oracle.com/javafx/2/layout/builtin_layouts.htm
-	    HBox vbox = new HBox();
+	    VBox vbox = new VBox();
 	    vbox.setPadding(new Insets(20));
 	    vbox.setSpacing(8);
-
+	    
+	    VBox stats = new VBox();
+	    TextArea statsText = new TextArea();
+	    statsText.setText(Critter.runStats());
+	    //statsText.setDisable(true);
+	    stats.getChildren().add(statsText);
+	    //List<Critter> crittersUgh = new List<Critter>();
+	    
+	    //statsText.setText(Critter.runStats());
 	    Text title = new Text("DATA");
 	    title.setFont(Font.font("Courier New", FontWeight.BOLD, 14));
 	    vbox.getChildren().add(title);
 	    vbox.getChildren().add(btn);
 	    vbox.getChildren().add(babymaker);
+	    vbox.getChildren().add(step100);
+	    vbox.getChildren().add(step1000);
+        vbox.getChildren().add(makeInputBox);
+        vbox.getChildren().add(critterTypeLabel);
+        vbox.getChildren().add(makeCritterDropdown);
+        vbox.getChildren().add(makeButton);
+	    vbox.getChildren().add(seed);
+	    vbox.getChildren().add(setSeed);
+	    vbox.getChildren().add(runBtn);
+	    vbox.getChildren().add(quitBtn);
 	    
 	    
 	    // actually mine but whatever
@@ -81,20 +116,58 @@ public class Main extends Application{
 	    layout.setTop(header);
 	    layout.setLeft(vbox);
 	    layout.setCenter(controller);
+	    layout.setRight(stats);
 	    // END OF NOT MY CODE
 	    
 
-	    	  
 
+	    step100.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override 
+            public void handle(ActionEvent e) {
+                // Action for Button
+	            	for(int i=0; i<100; i++)	{
+	            		Critter.worldTimeStep();
+	            	}
+	            	Critter.displayWorld(worldCanvas);
+	        	    statsText.setText(Critter.runStats());
+            }
+	    });
 	    
-/*	        
-	        Button makeButton = new Button("Make Critter");
-	        ComboBox<String> makeCritterDropdown = new ComboBox<>();
+	    step1000.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override 
+            public void handle(ActionEvent e) {
+                // Action for Button
+	            	for(int i=0; i<1000; i++)	{
+	            		Critter.worldTimeStep();
+	            	}
+	            	Critter.displayWorld(worldCanvas);
+	        	    statsText.setText(Critter.runStats());
+            }
+	    });
+	    
+	    
+	    
+	    setSeed.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override 
+            public void handle(ActionEvent e) {
+            		try	{
+		            	if (seed != null)	{
+		            		int newSeed = Integer.parseInt(seed.getText());
+		            		Critter.setSeed(newSeed);
+		            	}
+            		} catch(NumberFormatException exception) {
+            			new Alert(Alert.AlertType.ERROR, "Please enter a valid seed integer.").showAndWait();
+            		}
+
+            }
+	    });
+	    
+	  
 	        //String[] classes = this.getClasses();
-	        String[] classes = {"Critter1", "Critter2", "Critter3"};
+	        String[] classes = {"Craig"};
 	        makeCritterDropdown.getItems().addAll(classes);
 
-	        TextField makeInputBox = new TextField("1"); // default to 1 critter
+
 	        makeButton.setOnAction(new EventHandler<ActionEvent>() {
 	            @Override
 	            public void handle(ActionEvent event) {
@@ -107,6 +180,8 @@ public class Main extends Application{
 	                            for (int i = 0; i < n; i++) {
 	                                Critter.makeCritter(selection);
 	                            }
+	                            Critter.displayWorld(worldCanvas);
+	                            statsText.setText(Critter.runStats());
 	                        }
 	                    }
 	                } catch (InvalidCritterException e) {
@@ -115,12 +190,17 @@ public class Main extends Application{
 	                    // ignore
 	                }
 	            }
+	        
 	        });
 
-	        vbox.getChildren().add(makeButton);
-	        vbox.getChildren().add(makeInputBox);
-	        vbox.getChildren().add(makeCritterDropdown);
-*/	      
+	        
+	    quitBtn.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override 
+            public void handle(ActionEvent e) {
+            		System.exit(0);
+            }
+	    });
+	     
 
 	    	  
 	    	
@@ -153,6 +233,7 @@ public class Main extends Application{
                 // Action for Button
             	Critter.worldTimeStep();
             	Critter.displayWorld(worldCanvas);
+        	    statsText.setText(Critter.runStats());
             }
         });
         babymaker.setOnAction(new EventHandler<ActionEvent>() {     
@@ -169,16 +250,18 @@ public class Main extends Application{
     				System.out.println("error processing: " + "Craig");
     			}
             	Critter.displayWorld(worldCanvas);
+        	    statsText.setText(Critter.runStats());
             }
         });
-        Button runBtn = new Button("RUN");
-        vbox.getChildren().add(runBtn);
+
+        
         boolean running = true;
         runBtn.setOnAction(new EventHandler<ActionEvent>() {     
             @Override 
             public void handle(ActionEvent e) {
-            	Critter.worldTimeStep();
+            		Critter.worldTimeStep();
                 Critter.displayWorld(worldCanvas);
+        	    		statsText.setText(Critter.runStats());
             }
         });
         
