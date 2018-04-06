@@ -145,7 +145,7 @@ public abstract class Critter {
 				return crit.toString();
 			}
 		}
-		return "";
+		return null;
 	}
 	
 	/* rest is unchanged from Project 4 */
@@ -479,6 +479,7 @@ public abstract class Critter {
 		for(int count=0; count<Params.refresh_algae_count; count++) {
 			try {
 				Critter.makeCritter("Algae");
+				System.out.println("ALGAE");
 			} catch(InvalidCritterException | NoClassDefFoundError e) {
         		System.out.println("fuck u");
         	}
@@ -509,7 +510,6 @@ public abstract class Critter {
 		GraphicsContext gc = ((Canvas) world).getGraphicsContext2D();
 		gc.clearRect(0, 0, Params.world_width*Main.MULTIPLIER, Params.world_height*Main.MULTIPLIER);
 		for(Critter crit : population) {
-			//gc.strokePolyline(crit.viewShape(), crit.viewOutlineColor(), crit.viewFillColor());
 			gc.setFill(crit.viewFillColor());
 	        gc.setStroke(crit.viewOutlineColor());
 	        

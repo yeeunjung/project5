@@ -69,6 +69,9 @@ public class Critter4 extends Critter {
 	 */
 	public static String runStats(java.util.List<Critter> critter4s) {
 		String results = ("The Critter family of " + critter4s.size() + " has " + coins + " coins to spend."+ '\n');
+		if(critter4s.size()==0) {
+			return results;
+		}
 		int choice = Critter.getRandomInt(5);
 		String chosen="";
 		switch(choice) {
