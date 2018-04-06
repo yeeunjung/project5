@@ -3,7 +3,10 @@ package assignment5;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -63,22 +66,21 @@ public class Main extends Application{
 		//**** CREATING VARIABLES*****************
 		//**** ALL BUTTONS ***********************
 	    Button step = new Button("STEP");
-	    Button step100 = new Button("STEP 100 TIMES");
-	    Button step1000 = new Button("STEP 1000 TIMES");
 	    Button babymaker = new Button("MAKE");
         Button runBtn = new Button("RUN");
         Button stopBtn = new Button("STOP");
 	    Button setSeed = new Button("SET SEED");
 	    Button quitBtn = new Button("QUIT");
+	    Button statsBtn = new Button("RUN STATS");
 	    
-	    step100.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-	    step1000.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-	    babymaker.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-	    runBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-	    stopBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-        step.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-        setSeed.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-        quitBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+	    babymaker.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #c9ff5c; -fx-background-radius: 30;");
+	    runBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #c9ff5c; -fx-background-radius: 30;");
+	    stopBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ff5400; -fx-background-radius: 30;");
+        step.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #937aff; -fx-background-radius: 30;");
+        statsBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ffca0a; -fx-background-radius: 30;");
+        setSeed.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ffca0a; -fx-background-radius: 30;");
+        quitBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ff5400; -fx-background-radius: 30;");
+
         //**** SETS UP WORLD *********************	   
 		stage.setTitle(" C R I T T E R S !");
 		Text header = new Text("C R I T T E R S");
@@ -95,12 +97,16 @@ public class Main extends Application{
 	    
 		//**** PROMPT BOXES **********************
 	    Text critterTypeLabel = new Text("Critter Type:");
+	    critterTypeLabel.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
         ComboBox<String> makeCritterDropdown = new ComboBox<>();
+        makeCritterDropdown.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
         TextField makeInputBox = new TextField(); 
         makeInputBox.setPromptText("Enter # of Critters to make");
+        makeInputBox.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
 
 	    TextField seed = new TextField ();
 	    seed.setPromptText("Enter new seed");
+
 
 	    // Vbox help credit: https://docs.oracle.com/javafx/2/layout/builtin_layouts.htm
 	    //**** CONTROLS LAYOUT *******************
@@ -111,51 +117,84 @@ public class Main extends Application{
 	    title.setFont(Font.font("Courier New", FontWeight.BOLD, 14));
 	    layout.setLeft(controls);
 	    
+	    // RETRIEVING CLASSES - for the make and runStats functions
+	    //File srcFile = new File("//Users//Allegra//Documents//GitHub//project5//src//assignment5");    
+	    File srcFile = new File("C:\\Users\\nodur\\eclipse-workspace\\project5\\src\\assignment5"); 
+	    ArrayList<String> classes = new ArrayList<String>();
+	    for (String crit : srcFile.list()) {
+	    	crit = crit.substring(0, crit.lastIndexOf("."));
+	    	try {
+	    		if(Critter.class.isAssignableFrom((Class.forName("assignment5."+crit)))){
+	    			classes.add(crit);
+	    		}
+	    	} catch (ClassNotFoundException e) {
+	    		// ignore
+	    	}
+	    }
+	    
+	    // ***** SETTING UP STATS ****************
 	    VBox stats = new VBox();
 	    TextArea statsText = new TextArea();
-	    statsText.setText(Critter.runStats());
+	    statsText.setText("Select a Critter from the menu to run its stats.");
+	    statsText.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    //statsText.setDisable(true);
 	    stats.getChildren().add(statsText);
+	    
+	    ComboBox<String> runStatsDropdown = new ComboBox<String>();
+        runStatsDropdown.getItems().addAll(classes);
+        runStatsDropdown.getItems().add("All Critters");
+        runStatsDropdown.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
+        HBox runBox = new HBox();
+        runBox.getChildren().add(runStatsDropdown);
+        runBox.getChildren().add(statsBtn);	   
+        stats.getChildren().add(runBox);
 	    layout.setRight(stats);
 	    
-	    controls.getChildren().add(title);
-	    controls.getChildren().add(step);
-	    controls.getChildren().add(babymaker);
-	    controls.getChildren().add(step100);
-	    controls.getChildren().add(step1000);
-        controls.getChildren().add(makeInputBox);
-        controls.getChildren().add(critterTypeLabel);   
-        controls.getChildren().add(makeCritterDropdown);
-	    controls.getChildren().add(seed);
-	    controls.getChildren().add(setSeed);
-	    controls.getChildren().add(runBtn);
-	    controls.getChildren().add(quitBtn);
-	    controls.getChildren().add(stopBtn);
 	    
-	    // ### STEP100 FUNCTION ###
-	    step100.setOnAction(new EventHandler<ActionEvent>()	{
+	    // ### RUN STATS BUTTON FUNCTION ###
+	    statsBtn.setOnAction(new EventHandler<ActionEvent>()	{
+            @Override
+            public void handle(ActionEvent e) {
+            		runStatsFunc(runStatsDropdown, statsText);
+            }
+	    });
+	    //********SLIDER FOR STEPS*************
+        HBox stepSliderFullLabel = new HBox();
+        VBox stepSlider = new VBox();
+        stepSlider.setPadding(new Insets(5));
+        Slider numSteps = new Slider(0,1000,10);
+        numSteps.setShowTickMarks(true);
+        numSteps.setShowTickLabels(true);
+        Label numStepsLbl = new Label(Integer.toString((int)numSteps.getValue()));
+        numStepsLbl.setFont(Font.font("Courier New", 10));
+        numSteps.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                Number old_val, Number new_val) {
+                    numStepsLbl.setText(String.format("%1.0f", new_val));
+            }
+        });
+        Text numStepsTxt = new Text("NUMBER OF STEPS : ");
+		numStepsTxt.setFont(Font.font("Courier New", 10));
+		stepSliderFullLabel.getChildren().add(numStepsTxt);
+		stepSliderFullLabel.getChildren().add(numStepsLbl);
+		stepSlider.getChildren().add(stepSliderFullLabel);
+        stepSlider.getChildren().add(numSteps);
+        
+        //********END STEP SLIDER****************
+        
+	    // ### STEP FUNCTION ###
+	    step.setOnAction(new EventHandler<ActionEvent>()	{
             @Override 
             public void handle(ActionEvent e) {
                 // Action for Button
-	            	for(int i=0; i<100; i++)	{
+	            	for(int i=0; i<numSteps.getValue(); i++)	{
 	            		Critter.worldTimeStep();
 	            	}
 	            	Critter.displayWorld(worldCanvas);
-	        	    statsText.setText(Critter.runStats());
+	            	runStatsFunc(runStatsDropdown, statsText);
             }
 	    });
-	    // ### STEP1000 FUNCTION ###
-	    step1000.setOnAction(new EventHandler<ActionEvent>()	{
-            @Override 
-            public void handle(ActionEvent e) {
-                // Action for Button
-	            	for(int i=0; i<1000; i++)	{
-	            		Critter.worldTimeStep();
-	            	}
-	            	Critter.displayWorld(worldCanvas);
-	        	    statsText.setText(Critter.runStats());
-            }
-	    });
+
 	    	    
 	    // ### SET SEEDS FUNCTION ###
 	    setSeed.setOnAction(new EventHandler<ActionEvent>()	{
@@ -172,19 +211,6 @@ public class Main extends Application{
 
             }
 	    });	  
-	    // RETRIEVING CLASSES - for the make function
-	    File srcFile = new File("C:\\Users\\nodur\\eclipse-workspace\\project5\\src\\assignment5");    
-	    ArrayList<String> classes = new ArrayList<String>();
-	    for (String crit : srcFile.list()) {
-	    	crit = crit.substring(0, crit.lastIndexOf("."));
-	    	try {
-	    		if(Critter.class.isAssignableFrom((Class.forName("assignment5."+crit)))){
-	    			classes.add(crit);
-	    		}
-	    	} catch (ClassNotFoundException e) {
-	    		// ignore
-	    	}
-	    }
 	    
 	    makeCritterDropdown.getItems().addAll(classes);
 
@@ -222,16 +248,6 @@ public class Main extends Application{
             		System.exit(0);
             }
 	    });
-	    
-        step.setOnAction(new EventHandler<ActionEvent>() {     
-            @Override 
-            public void handle(ActionEvent e) {
-                // Action for Button
-            	Critter.worldTimeStep();
-            	Critter.displayWorld(worldCanvas);
-        	    statsText.setText(Critter.runStats());
-            }
-        });
         
         // SLIDER CREATION
         // Makes the animation slider and formats it real pretty
@@ -255,52 +271,106 @@ public class Main extends Application{
 		animSliderFullLabel.getChildren().add(animSpeedLbl);
 		animSlider.getChildren().add(animSliderFullLabel);
         animSlider.getChildren().add(animSpeed);
-        controls.getChildren().add(animSlider);
 
         // ### RUN FUNCTION ###
         Timeline timeline = new Timeline(new KeyFrame(
     	        Duration.millis(500),
-    	        ae -> animateTime(worldCanvas, statsText, animSpeed.getValue())));
+    	        ae -> animateTime(worldCanvas, runStatsDropdown, statsText, animSpeed.getValue())));
         runBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override 
             public void handle(ActionEvent e) {
-            	animStart(timeline, worldCanvas, runBtn, step, babymaker);
+            	animStart(timeline, worldCanvas, runBtn, step, babymaker, setSeed, statsBtn);
             }
         });
         // ### STOP FUNCTION ###
         stopBtn.setOnAction(new EventHandler<ActionEvent>() {     
             @Override 
             public void handle(ActionEvent e) {
-            	animStop(timeline, worldCanvas, runBtn, step, babymaker);
+            	animStop(timeline, worldCanvas, runBtn, step, babymaker, setSeed, statsBtn);
             }
-        });        
+        });      
+        
+        //***** SETTING UP CONTROLS AFTER EVERYTHING IS CREATED ********
+	    controls.getChildren().add(title);
+	    // Critter Maker
+        controls.getChildren().add(critterTypeLabel);   
+        controls.getChildren().add(makeCritterDropdown);
+	    HBox maker = new HBox();
+	    maker.getChildren().add(makeInputBox);
+	    maker.getChildren().add(babymaker);
+        controls.getChildren().add(maker);   
+        // Step Maker
+        HBox stepMaker = new HBox();
+        stepMaker.getChildren().add(stepSlider);
+	    stepMaker.getChildren().add(step);
+	    controls.getChildren().add(stepMaker);
+	    // Run Stop
+	    HBox runStop = new HBox();
+	    runStop.getChildren().add(runBtn);    
+	    runStop.getChildren().add(stopBtn);
+	    controls.getChildren().add(runStop);
+        controls.getChildren().add(animSlider);
+	    // Seed box
+        HBox garden = new HBox();
+	    garden.getChildren().add(seed);
+	    garden.getChildren().add(setSeed);
+	    controls.getChildren().add(garden);
+	    
+
+        //Add quit button last
+	    controls.getChildren().add(quitBtn);
         
         Scene placeLayout = new Scene(layout);
         stage.setScene(placeLayout);
 		stage.show();
 	}
 	
+	
 	// FOR ANIMATIONS - PACKETS
-	private static void animateTime(Canvas world, TextArea statsText, double animSpeed) {
+	private static void animateTime(Canvas world, ComboBox<String> runStatsDropdown, TextArea statsText, double animSpeed) {
 		for(int count=0; count<(int)animSpeed; count++) {
 			Critter.worldTimeStep();			
 		}
 		Critter.displayWorld(world);
-	    statsText.setText(Critter.runStats());
+	    runStatsFunc(runStatsDropdown, statsText);
 	}
 	
-	private static void animStart(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
+	private static void animStart(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3, Button b4, Button b5) {
 		timeline.setCycleCount(Animation.INDEFINITE);
     	timeline.play();
     	b1.setDisable(true);
     	b2.setDisable(true);
     	b3.setDisable(true);
+    	b4.setDisable(true);
+    	b5.setDisable(true);
 	}
 	
-	private static void animStop(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
+	private static void animStop(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3, Button b4, Button b5) {
 		timeline.stop();
     	b1.setDisable(false);
     	b2.setDisable(false);
     	b3.setDisable(false);
+    	b4.setDisable(false);
+    	b5.setDisable(false);
+	}
+	
+	private static void runStatsFunc(ComboBox<String> runStatsDropdown, TextArea statsText) {
+		String statsCritter = runStatsDropdown.getValue();
+    	if (statsCritter != null)	{
+    		if (statsCritter == "All Critters") {
+    			statsText.setText(Critter.runStats());
+    		} else {
+        		try {
+        			//get the runStats method for the specific critter and call it
+        			List<Critter> instances = Critter.getInstances(statsCritter);
+        			Class StatCritter = Class.forName("assignment5." + statsCritter);
+        			Method runStats = StatCritter.getMethod("runStats", List.class);
+        		    statsText.setText((String) runStats.invoke(StatCritter, instances));
+        		} catch (InvalidCritterException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | NoClassDefFoundError | IllegalArgumentException | InvocationTargetException exception) {
+        			//run stats on all critters by default (if the particular critter doesn't have a runStats method
+        			statsText.setText(Critter.runStats());
+        		}
+    		}
+    	}
 	}
 }
