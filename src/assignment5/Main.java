@@ -118,8 +118,8 @@ public class Main extends Application{
 	    layout.setLeft(controls);
 	    
 	    // RETRIEVING CLASSES - for the make and runStats functions
-	    //File srcFile = new File("//Users//Allegra//Documents//GitHub//project5//src//assignment5");    
-	    File srcFile = new File("C:\\Users\\nodur\\eclipse-workspace\\project5\\src\\assignment5"); 
+	    File srcFile = new File("//Users//Allegra//Documents//GitHub//project5//src//assignment5");    
+	    //File srcFile = new File("C:\\Users\\nodur\\eclipse-workspace\\project5\\src\\assignment5"); 
 	    ArrayList<String> classes = new ArrayList<String>();
 	    for (String crit : srcFile.list()) {
 	    	crit = crit.substring(0, crit.lastIndexOf("."));
