@@ -73,13 +73,13 @@ public class Main extends Application{
 	    Button quitBtn = new Button("QUIT");
 	    Button statsBtn = new Button("RUN STATS");
 	    
-	    babymaker.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-	    runBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-	    stopBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-        step.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-        statsBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-        setSeed.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
-        quitBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\";");
+	    babymaker.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #c9ff5c; -fx-background-radius: 30;");
+	    runBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #c9ff5c; -fx-background-radius: 30;");
+	    stopBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ff5400; -fx-background-radius: 30;");
+        step.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #937aff; -fx-background-radius: 30;");
+        statsBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ffca0a; -fx-background-radius: 30;");
+        setSeed.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ffca0a; -fx-background-radius: 30;");
+        quitBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ff5400; -fx-background-radius: 30;");
 
         //**** SETS UP WORLD *********************	   
 		stage.setTitle(" C R I T T E R S !");
@@ -97,9 +97,12 @@ public class Main extends Application{
 	    
 		//**** PROMPT BOXES **********************
 	    Text critterTypeLabel = new Text("Critter Type:");
+	    critterTypeLabel.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
         ComboBox<String> makeCritterDropdown = new ComboBox<>();
+        makeCritterDropdown.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
         TextField makeInputBox = new TextField(); 
         makeInputBox.setPromptText("Enter # of Critters to make");
+        makeInputBox.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
 
 	    TextField seed = new TextField ();
 	    seed.setPromptText("Enter new seed");
@@ -115,7 +118,8 @@ public class Main extends Application{
 	    layout.setLeft(controls);
 	    
 	    // RETRIEVING CLASSES - for the make and runStats functions
-	    File srcFile = new File("//Users//Allegra//Documents//GitHub//project5//src//assignment5");    
+	    //File srcFile = new File("//Users//Allegra//Documents//GitHub//project5//src//assignment5");    
+	    File srcFile = new File("C:\\Users\\nodur\\eclipse-workspace\\project5\\src\\assignment5"); 
 	    ArrayList<String> classes = new ArrayList<String>();
 	    for (String crit : srcFile.list()) {
 	    	crit = crit.substring(0, crit.lastIndexOf("."));
@@ -132,28 +136,20 @@ public class Main extends Application{
 	    VBox stats = new VBox();
 	    TextArea statsText = new TextArea();
 	    statsText.setText("Select a Critter from the menu to run its stats.");
+	    statsText.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
 	    //statsText.setDisable(true);
 	    stats.getChildren().add(statsText);
 	    
 	    ComboBox<String> runStatsDropdown = new ComboBox<String>();
         runStatsDropdown.getItems().addAll(classes);
         runStatsDropdown.getItems().add("All Critters");
-        stats.getChildren().add(runStatsDropdown);
-        stats.getChildren().add(statsBtn);
-	    
+        runStatsDropdown.setStyle("-fx-font-size: 12; -fx-font-family: \"Courier New\";");
+        HBox runBox = new HBox();
+        runBox.getChildren().add(runStatsDropdown);
+        runBox.getChildren().add(statsBtn);	   
+        stats.getChildren().add(runBox);
 	    layout.setRight(stats);
 	    
-	    controls.getChildren().add(title);
-	    controls.getChildren().add(step);
-	    controls.getChildren().add(babymaker);
-        controls.getChildren().add(makeInputBox);
-        controls.getChildren().add(critterTypeLabel);   
-        controls.getChildren().add(makeCritterDropdown);
-	    controls.getChildren().add(seed);
-	    controls.getChildren().add(setSeed);
-	    controls.getChildren().add(runBtn);
-	    controls.getChildren().add(quitBtn);
-	    controls.getChildren().add(stopBtn);
 	    
 	    // ### RUN STATS BUTTON FUNCTION ###
 	    statsBtn.setOnAction(new EventHandler<ActionEvent>()	{
@@ -183,7 +179,6 @@ public class Main extends Application{
 		stepSliderFullLabel.getChildren().add(numStepsLbl);
 		stepSlider.getChildren().add(stepSliderFullLabel);
         stepSlider.getChildren().add(numSteps);
-        controls.getChildren().add(numSteps);
         
         //********END STEP SLIDER****************
         
@@ -276,7 +271,6 @@ public class Main extends Application{
 		animSliderFullLabel.getChildren().add(animSpeedLbl);
 		animSlider.getChildren().add(animSliderFullLabel);
         animSlider.getChildren().add(animSpeed);
-        controls.getChildren().add(animSlider);
 
         // ### RUN FUNCTION ###
         Timeline timeline = new Timeline(new KeyFrame(
@@ -285,16 +279,46 @@ public class Main extends Application{
         runBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override 
             public void handle(ActionEvent e) {
-            	animStart(timeline, worldCanvas, runBtn, step, babymaker);
+            	animStart(timeline, worldCanvas, runBtn, step, babymaker, setSeed, statsBtn);
             }
         });
         // ### STOP FUNCTION ###
         stopBtn.setOnAction(new EventHandler<ActionEvent>() {     
             @Override 
             public void handle(ActionEvent e) {
-            	animStop(timeline, worldCanvas, runBtn, step, babymaker);
+            	animStop(timeline, worldCanvas, runBtn, step, babymaker, setSeed, statsBtn);
             }
-        });        
+        });      
+        
+        //***** SETTING UP CONTROLS AFTER EVERYTHING IS CREATED ********
+	    controls.getChildren().add(title);
+	    // Critter Maker
+        controls.getChildren().add(critterTypeLabel);   
+        controls.getChildren().add(makeCritterDropdown);
+	    HBox maker = new HBox();
+	    maker.getChildren().add(makeInputBox);
+	    maker.getChildren().add(babymaker);
+        controls.getChildren().add(maker);   
+        // Step Maker
+        HBox stepMaker = new HBox();
+        stepMaker.getChildren().add(stepSlider);
+	    stepMaker.getChildren().add(step);
+	    controls.getChildren().add(stepMaker);
+	    // Run Stop
+	    HBox runStop = new HBox();
+	    runStop.getChildren().add(runBtn);    
+	    runStop.getChildren().add(stopBtn);
+	    controls.getChildren().add(runStop);
+        controls.getChildren().add(animSlider);
+	    // Seed box
+        HBox garden = new HBox();
+	    garden.getChildren().add(seed);
+	    garden.getChildren().add(setSeed);
+	    controls.getChildren().add(garden);
+	    
+
+        //Add quit button last
+	    controls.getChildren().add(quitBtn);
         
         Scene placeLayout = new Scene(layout);
         stage.setScene(placeLayout);
@@ -311,19 +335,23 @@ public class Main extends Application{
 	    runStatsFunc(runStatsDropdown, statsText);
 	}
 	
-	private static void animStart(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
+	private static void animStart(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3, Button b4, Button b5) {
 		timeline.setCycleCount(Animation.INDEFINITE);
     	timeline.play();
     	b1.setDisable(true);
     	b2.setDisable(true);
     	b3.setDisable(true);
+    	b4.setDisable(true);
+    	b5.setDisable(true);
 	}
 	
-	private static void animStop(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3) {
+	private static void animStop(Timeline timeline, Canvas worldCanvas, Button b1, Button b2, Button b3, Button b4, Button b5) {
 		timeline.stop();
     	b1.setDisable(false);
     	b2.setDisable(false);
     	b3.setDisable(false);
+    	b4.setDisable(false);
+    	b5.setDisable(false);
 	}
 	
 	private static void runStatsFunc(ComboBox<String> runStatsDropdown, TextArea statsText) {
