@@ -72,6 +72,7 @@ public class Main extends Application{
 	    Button setSeed = new Button("SET SEED");
 	    Button quitBtn = new Button("QUIT");
 	    Button statsBtn = new Button("RUN STATS");
+	    Button clrBtn = new Button("CLEAR");
 	    
 	    babymaker.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #c9ff5c; -fx-background-radius: 30;");
 	    runBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #c9ff5c; -fx-background-radius: 30;");
@@ -79,6 +80,7 @@ public class Main extends Application{
         step.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #937aff; -fx-background-radius: 30;");
         statsBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ffca0a; -fx-background-radius: 30;");
         setSeed.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ffca0a; -fx-background-radius: 30;");
+        clrBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #c9ff5c; -fx-background-radius: 30;");
         quitBtn.setStyle("-fx-font-weight: bold; -fx-font-size: 12; -fx-font-family: \"Courier New\"; -fx-background-color: #ff5400; -fx-background-radius: 30;");
 
         //**** SETS UP WORLD *********************	   
@@ -288,7 +290,15 @@ public class Main extends Application{
             public void handle(ActionEvent e) {
             	animStop(timeline, worldCanvas, runBtn, step, babymaker, setSeed, statsBtn);
             }
-        });      
+        });    
+        // ### CLR FUNCTION ###
+        clrBtn.setOnAction(new EventHandler<ActionEvent>() {     
+            @Override 
+            public void handle(ActionEvent e) {
+            	Critter.clearWorld();
+            	Critter.displayWorld(worldCanvas);
+            }
+        }); 
         
         //***** SETTING UP CONTROLS AFTER EVERYTHING IS CREATED ********
 	    controls.getChildren().add(title);
@@ -315,10 +325,11 @@ public class Main extends Application{
 	    garden.getChildren().add(seed);
 	    garden.getChildren().add(setSeed);
 	    controls.getChildren().add(garden);
-	    
-
         //Add quit button last
-	    controls.getChildren().add(quitBtn);
+	    HBox clrQuit = new HBox();
+	    clrQuit.getChildren().add(clrBtn);
+	    clrQuit.getChildren().add(quitBtn);
+	    controls.getChildren().add(clrQuit);
         
         Scene placeLayout = new Scene(layout);
         stage.setScene(placeLayout);
